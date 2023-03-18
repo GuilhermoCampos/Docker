@@ -1,0 +1,27 @@
+docker build -t NomeImagem -f Caminho/Dockerfile .
+
+docker ps
+
+docker images ls
+
+docker run -d --rm --name NomeContainer ImagemContainer:versão
+
+#com pasta compartilhada persistente
+docker run -d -v pastaHost:pastaContainer --rm --name NomeContainer ImagemContainer:versão
+
+docker run -d -v $(pwd)/db/data:/var/lib/mysql --rm --name NomeContainer ImagemContainer:versão
+
+docker exec -i #interativo NomeContaier mysql -u root -p root < api/db/script.sql
+
+docker exec -it #"interativo e vai utilizar um terminal" NomeContainer /bin/bash
+
+docker build -t docker-node -f api/dockerfile .
+
+docker run -d -v $(pwd)/api:/home/node/app -p 9001:9001 --rm --name dockerNode docker-node
+
+#conectar com mysql
+docker run -d -v $(pwd)/api:/home/node/app -p 9001:9001 --link dockerMysql --rm --name dockerNode docker-node
+
+docker build -t docker-php -f website/Dockerfile .
+
+docker run -d -v $(pwd)/website:/var/www/html -p 8888:80 --link dockerNode --rm --name dockerPhp docker-php
